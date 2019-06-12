@@ -62,11 +62,11 @@ $ docker run --network=cass-net --memory 4g --name my-cass -d cassandra
 ```
 
 ## App execution
-First, we need to add data to the Cassandra database. We will use quickstart/datasets/words.csv.
+First, we need to add data to the Cassandra database. We will use datasets/words.csv.
 
 Copy csv to Cassandra container:
 ```bash
-$ docker cp quickstart/datasets/words.csv my-cass:/
+$ docker cp datasets/words.csv my-cass:/
 ```
 Create Cassandra keyspace and table:
 ```bash
