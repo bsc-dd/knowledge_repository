@@ -43,9 +43,10 @@ NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCK
 myvm1   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.6   
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.6
 ```
-Set docker machine shell environment:
+Set docker machine shell environment **(this must always be done before executing runcompss-docker)**:
+```bash
 $ eval $(docker-machine env myvm1)
-
+```
 ## Setup Cassandra container
 Pull Cassandra container image:
 ```bash
