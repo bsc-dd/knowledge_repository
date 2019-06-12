@@ -7,6 +7,7 @@ $ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
   sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
 To install virtualbox go to https://www.virtualbox.org/wiki/Linux_Downloads and follow the instructions.
+
 Then we create the virtual machines:
 ```bash
 $ docker-machine create --driver virtualbox myvm1
