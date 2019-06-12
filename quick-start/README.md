@@ -130,7 +130,7 @@ To finish, we can stop the Cassandra container with:
 $ docker stop my-cass
 ```
 ## Already created swarm
-If a swarm is already created, you only have to do (remember to start the Cassandra container)
+If a swarm is already created, you only have to do (remember to start the Cassandra container):
 ```bash
 $ docker-machine start myvm1
 $ docker-machine start myvm2
