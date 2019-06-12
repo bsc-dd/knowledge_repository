@@ -1,12 +1,12 @@
 ## Create virtual machines and setup swarm cluster
 First we need to install docker-machine:
 ```bash
-# Install docker-machine
 $ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
   curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
   sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
 To install virtualbox go to https://www.virtualbox.org/wiki/Linux_Downloads and follow the instructions.
+
 Then we create the virtual machines:
 ```bash
 $ docker-machine create --driver virtualbox myvm1
@@ -16,7 +16,7 @@ NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCK
 myvm1   -        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.6   
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.6   
 ```
-Let's initialize swarm
+Let's initialize the swarm:
 ```bash
 $ docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.100"
 Swarm initialized: current node (h2oqpc6zdrgas4qhoael9ld8v) is now a manager.
@@ -43,9 +43,10 @@ NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCK
 myvm1   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.6   
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.6
 ```
-Set docker machine shell environment:
+Set docker machine shell environment **(this must always be done before executing runcompss-docker)**:
+```bash
 $ eval $(docker-machine env myvm1)
-
+```
 ## Setup Cassandra container
 Pull Cassandra container image:
 ```bash
