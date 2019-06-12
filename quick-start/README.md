@@ -62,11 +62,26 @@ $ docker run --network=cass-net --memory 4g --name my-cass -d cassandra
 ```
 
 ## App execution
-Execute a simple Hecuba and PyCOMPSs app:
+First, we need to add data to the Cassandra database. We will use quickstart/datasets/words.csv.
+
+Copy csv to Cassandra container:
+```bash
+$ docker cp quickstart/datasets/words.csv my-cass:/
+```
+Create Cassandra keyspace and table:
+```bash
+$ docker exec -it my-cass cqlsh -e "CREATE KEYSPACE IF NOT EXISTS my_app WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};"
+$ docker exec -it my-cass cqlsh -e "CREATE TABLE IF NOT EXISTS my_app.words (position int PRIMARY KEY, words text);"
+```
+Add data to the table:
+```bash
+$ docker exec -it my-cass cqlsh -e "COPY my_app.words (position, words) FROM '/words.csv' WITH HEADER = TRUE;"
+```
+Execute the WordCount app with Hecuba and PyCOMPSs:
 ```bash
 $ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='bscdatadriven/hecuba-compss-quickstart:latest' --stack=teststack --context-dir='/root/code' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt -d /root/code/WordCountExample.py
 ```
-runcompss-docker usage:
+runcompss-docker allows to choose the parameters of the app deployment. Usage:
 ```bash
 scripts/user/runcompss-docker
             --worker-containers=N
@@ -109,6 +124,10 @@ scripts/user/runcompss-docker
                                # Example: --vm-creation-time=12
     --min-vms:                 # Minimum number of docker containers to run on cloud
     --max-vms:                 # Maximum number of docker containers to run on cloud
+```
+To finish, we can stop the Cassandra container with:
+```bash
+$ docker stop my-cass
 ```
 ## Already created swarm
 If a swarm is already created, you only have to do (remember to start the Cassandra container)
