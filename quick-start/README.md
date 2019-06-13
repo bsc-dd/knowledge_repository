@@ -64,7 +64,8 @@ Run Cassandra container attached to the network:
 ```bash
 $ docker run --network=cass-net --memory 4g --name my-cass -d cassandra
 ```
-
+The following image describes the infrastructure of the cluster:
+![Quickstart](Quickstart.png)
 ## App execution
 First, we need to add data to the Cassandra database. We will use datasets/words.csv.
 
