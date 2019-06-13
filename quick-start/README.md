@@ -1,5 +1,9 @@
 ## Create virtual machines and setup swarm cluster
-First we need to install docker-machine:
+First we need to install docker. To do so go to https://docs.docker.com/v17.12/install/#supported-platforms and follow the instructions for your OS.
+
+After installing docker, go to https://docs.docker.com/install/linux/linux-postinstall/ and follow the steps in **Manage Docker as a non-root user**.
+
+Second we need to install docker-machine:
 ```bash
 $ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
   curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
@@ -16,7 +20,7 @@ NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCK
 myvm1   -        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.6   
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.6   
 ```
-Let's initialize the swarm:
+Let's initialize the swarm **(the parameter --advertise-addr has to be the ip of a vm in the previous list)**:
 ```bash
 $ docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.100"
 Swarm initialized: current node (h2oqpc6zdrgas4qhoael9ld8v) is now a manager.
@@ -43,7 +47,7 @@ NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCK
 myvm1   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.6   
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.6
 ```
-Set docker machine shell environment **(this must always be done before executing runcompss-docker)**:
+Set docker machine shell environment **(this must always be done before executing runcompss-docker in a new terminal)**:
 ```bash
 $ eval $(docker-machine env myvm1)
 ```
@@ -146,7 +150,7 @@ Then we start the Cassandra container:
 ```bash
 $ docker start my-cass
 ```
-Now we can execute the app:
+Now we can execute the app **(using --s='\<ip-swarm-manager>:2376')**:
 ```bash
 $ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='bscdatadriven/hecuba-compss-quickstart:latest' --stack=teststack --context-dir='/root/code' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt /root/code/WordCountExample.py
 ```
@@ -163,7 +167,7 @@ CONTAINER ID        IMAGE                                           COMMAND     
 695459a6e169        bscdatadriven/hecuba-compss-quickstart:latest   "bash"                   4 seconds ago       Up 4 seconds        22/tcp, 80/tcp                                vibrant_greider
 cf23231bc034        cassandra                                       "docker-entrypoint.s…"   5 hours ago         Up 5 hours          7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp   my-cass
 ```
-Now we have to copy the files:
+Now we have to copy the files to the container **using the container id**:
 ```bash
 $ docker cp myfile.py 695459a6e169:/path/to/code/
 ```
@@ -172,7 +176,7 @@ Then we save the image in a new dockerhub repository:
 $ docker commit 695459a6e169 mydockerhubuser/my-image:1.0
 $ docker push mydockerhubuser/my-image:1.0
 ```
-To finish, we can execute the app as follows:
+To finish, we can execute the app as follows **(using --s='\<ip-swarm-manager>:2376')**:
 ```bash
 $ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='mydockerhubuser/my-image:1.0' --stack=teststack --context-dir='/path/to/code/' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt /path/to/code/myfile.py
 ```
