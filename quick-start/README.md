@@ -26,7 +26,7 @@ To add a worker to this swarm, run the following command:
     
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 ```
-Now we will add one worker to this swarm, with the following command:
+Now we will add one worker to this swarm, with the following command **(note that you have to use the previously given token, not the one in this example)**:
 ```bash
 $ docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-4q2biqvtm04f29slk6s6yt154aov1e9z98gu7jol24xte8eeqj-6qcoshxgy2stl7wihhyq81vm8 192.168.99.100:2377"
 ```
