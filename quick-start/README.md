@@ -77,9 +77,15 @@ Add data to the table:
 ```bash
 $ docker exec -it my-cass cqlsh -e "COPY my_app.words (position, words) FROM '/words.csv' WITH HEADER = TRUE;"
 ```
+To simplify, you can also put these 3 instructions inside a .cql file:
+```bash
+$ docker cp datasets/words.csv my-cass:/
+$ docker cp datasets/insert_words.cql my-cass:/
+$ docker exec my-cass cqlsh -f /insert_words.cql
+```
 Execute the WordCount app with Hecuba and PyCOMPSs:
 ```bash
-$ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='bscdatadriven/hecuba-compss-quickstart:latest' --stack=teststack --context-dir='/root/code' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt -d /root/code/WordCountExample.py
+$ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='bscdatadriven/hecuba-compss-quickstart:latest' --stack=teststack --context-dir='/root/code' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt /root/code/WordCountExample.py
 ```
 runcompss-docker allows to choose the parameters of the app deployment. Usage:
 ```bash
@@ -129,13 +135,20 @@ To finish, we can stop the Cassandra container with:
 ```bash
 $ docker stop my-cass
 ```
-## Already created swarm
-If a swarm is already created, you only have to do (remember to start the Cassandra container):
+## Already created swarm and Cassandra containers
+If a swarm is already created, you can start the virtual machines without creating them:
 ```bash
 $ docker-machine start myvm1
 $ docker-machine start myvm2
 $ eval $(docker-machine env myvm1)
-$ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='bscdatadriven/hecuba-compss-quickstart:latest' --stack=teststack --context-dir='/root/code' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt -d /root/code/WordCountExample.py
+```
+Then we start the Cassandra container:
+```bash
+$ docker start my-cass
+```
+Now we can execute the app:
+```bash
+$ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='bscdatadriven/hecuba-compss-quickstart:latest' --stack=teststack --context-dir='/root/code' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt /root/code/WordCountExample.py
 ```
 ## Execute your own app
 To execute an application that you yourself have implemented, first you have to copy the code to the image. There are several ways to do this, for example running a container in interactive mode, copying the code and then saving the image.
@@ -161,5 +174,5 @@ $ docker push mydockerhubuser/my-image:1.0
 ```
 To finish, we can execute the app as follows:
 ```bash
-$ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='mydockerhubuser/my-image:1.0' --stack=teststack --context-dir='/path/to/code/' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt -d /path/to/code/myfile.py
+$ scripts/user/runcompss-docker --w=1 --s='192.168.99.100:2376' --i='mydockerhubuser/my-image:1.0' --stack=teststack --context-dir='/path/to/code/' --classpath=/root/conf/*.jar  --storage_conf=/root/conf/multinode.txt /path/to/code/myfile.py
 ```
