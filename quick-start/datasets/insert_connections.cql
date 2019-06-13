@@ -1,7 +1,7 @@
-CREATE KEYSPACE IF NOT EXISTS my_app WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+CREATE KEYSPACE IF NOT EXISTS experiment1 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 
 
-CREATE TABLE my_app.example_dataset (
+CREATE TABLE experiment1.example_dataset (
     fk_numperso int,
     pk_anyomesdia text,
     fk_cod_operacion text,
@@ -24,4 +24,4 @@ CREATE TABLE my_app.example_dataset (
     AND speculative_retry = '99PERCENTILE';
 
 
-COPY my_app.example_dataset (fk_numperso, pk_anyomesdia, fk_cod_operacion, ip_terminal) FROM 'connections_dataset.csv' WITH HEADER = TRUE;
+COPY experiment1.example_dataset (fk_numperso, pk_anyomesdia, fk_cod_operacion, ip_terminal) FROM 'connections_dataset.csv' WITH HEADER = TRUE;
